@@ -17,7 +17,8 @@ public class PlayerMovement : MonoBehaviour
     [Header("Movement")]
     [SerializeField] private float walkSpeed;
     [SerializeField] private float runSpeed;
-    public float currentMoveSpeed;
+    public float currentMoveSpeed {  get; private set; }
+    public float speedModifier;
 
     [Header("Jump")]
     [SerializeField] private float jumpPower;
@@ -25,13 +26,14 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
-        
+        speedModifier = 1f;
     }
 
     // Update is called once per frame
     void Update()
     {
-        StateManage(); 
+        StateManage();
+        SpeedManage();
     }
 
     private void StateManage() //assigns player state
@@ -48,7 +50,16 @@ public class PlayerMovement : MonoBehaviour
         else State = PlayerState.standing; //if no button is pressed
     }
 
-    private void SpeedManage()
+    private void SpeedManage() // applies speed depending on state, stays the same if inAir / standing
+    {
+        if (State == PlayerState.running) currentMoveSpeed = CountSpeed(runSpeed);
+        else if (State == PlayerState.walking) currentMoveSpeed = CountSpeed(walkSpeed);
+    }
+
+    private float CountSpeed(float mainSpeed) //counts speed 
+        => mainSpeed * speedModifier;
+
+    private void MoveCharacter()
     {
 
     }
